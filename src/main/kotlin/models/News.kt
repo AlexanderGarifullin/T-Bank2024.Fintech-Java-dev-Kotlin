@@ -57,5 +57,5 @@ fun printNews(news: News) {
         println("${name.replaceFirstChar { it.titlecase() }}: $value")
     }
 
-    println("---------------")
+    println("-".repeat(20))
 }

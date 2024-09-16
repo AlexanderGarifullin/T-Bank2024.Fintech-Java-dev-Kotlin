@@ -4,7 +4,6 @@ import kotlinx.coroutines.runBlocking
 import org.example.models.getMostRatedNews
 import org.example.models.printNews
 import org.example.response.getNews
-import org.example.utils.NewsFileSaver
 import org.example.utils.NewsFileSaver.saveNews
 import java.time.LocalDate
 
@@ -25,7 +24,6 @@ fun main() = runBlocking {
     mostRatedNews.forEach { news ->
         printNews(news)
     }
-
 
     // Путь к файлу, в который будут сохранены новости
     val filePath = "news.csv"
