@@ -8,14 +8,18 @@ import kotlin.math.exp
 import kotlin.reflect.full.memberProperties
 import kotlin.reflect.KProperty1
 
-/*
- * - id - идентификатор новости
- * - title - заголовок новости
- * - place - место, где произошло событие
- * - description - описание новости
- * - siteUrl - ссылка на страницу новости на сайте KudaGo
- * - favoritesCount - число пользователей, добавивших новость в избранное
- * - commentsCount - число комментариев
+/**
+ * Represents a news item.
+ *
+ * @property id The unique identifier of the news item.
+ * @property title The title of the news item.
+ * @property place The place where the event occurred (nullable).
+ * @property description The description of the news item.
+ * @property siteUrl The URL of the news item on the KudaGo website (nullable).
+ * @property favoritesCount The number of users who have added this news item to their favorites.
+ * @property commentsCount The number of comments on the news item.
+ * @property publicationDate The publication date of the news item.
+ * @property rating The rating of the news item, calculated based on favorites and comments.
  */
 @Serializable
 data class News(
@@ -29,11 +33,21 @@ data class News(
     @SerialName("publication_date") @Serializable(LocalDateSerializer::class) val publicationDate: LocalDate
 
 ) {
+    /**
+     * Calculates the rating of the news item based on the number of favorites and comments.
+     * The formula used is: `1 / (1 + exp(-(favoritesCount / (commentsCount + 1))))`.
+     */
     val rating: Double
         get() = 1.0 / (1 + exp(-(favoritesCount / (commentsCount + 1)).toDouble()))
 }
 
-
+/**
+ * Filters and sorts a list of news items to return the most rated news within a specified period.
+ *
+ * @param count The maximum number of news items to return.
+ * @param period The range of publication dates to filter the news items.
+ * @return A list of the most rated news items within the specified period.
+ */
 fun List<News>.getMostRatedNews(count: Int, period: ClosedRange<LocalDate>): List<News> {
     return this
         .asSequence()
@@ -46,6 +60,11 @@ fun List<News>.getMostRatedNews(count: Int, period: ClosedRange<LocalDate>): Lis
         .toList()
 }
 
+/**
+ * Prints the details of a news item.
+ *
+ * @param news The news item to print.
+ */
 fun printNews(news: News) {
     val clazz = news::class
 

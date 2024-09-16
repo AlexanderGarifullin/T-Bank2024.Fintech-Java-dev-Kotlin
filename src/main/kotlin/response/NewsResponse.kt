@@ -13,7 +13,11 @@ import org.example.response.Constants.DEFAULT_LOCATION
 import org.example.response.Constants.DEFAULT_ORDER_BY
 import org.example.response.Constants.NEWS_FIELDS
 
-
+/**
+ * Represents the response from the KudaGo API containing a list of news items.
+ *
+ * @property results A list of news items.
+ */
 @Serializable
 data class NewsResponse(
     val results: List<News>
@@ -30,7 +34,12 @@ object Constants {
     const val NEWS_FIELDS = "id,title,place,description,site_url,favorites_count,comments_count,publication_date"
 }
 
-
+/**
+ * Retrieves a list of [News] items from the KudaGo API.
+ *
+ * @param count The number of news items to retrieve.
+ * @return A list of [News] items.
+ */
 suspend fun getNews(count: Int = 100): List<News> {
     val client = HttpClient {
         install(ContentNegotiation) {
