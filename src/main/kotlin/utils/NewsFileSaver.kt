@@ -1,5 +1,6 @@
 package org.example.utils
 
+import kotlinx.coroutines.channels.ReceiveChannel
 import org.example.models.News
 import java.io.File
 import kotlin.reflect.full.memberProperties
@@ -8,6 +9,30 @@ import kotlin.reflect.full.memberProperties
  * Object responsible for saving news items to a CSV file.
  */
 object NewsFileSaver {
+
+    /**
+     * Processes news items received from a [ReceiveChannel] and saves them to a CSV file.
+     *
+     * @param channel The channel providing collections of news items to save.
+     * @param filePath The path of the CSV file to save.
+     */
+    suspend fun processAndSaveNews(channel: ReceiveChannel<List<News>>, filePath: String) {
+        File(filePath).printWriter().use { writer ->
+            val (headers, propertyMapping) = generateCsvHeaderAndMapping(News::class)
+            writer.println(headers.joinToString(","))
+
+            for (newsList in channel) {
+                for (newsItem in newsList) {
+                    val values = headers.map { header ->
+                        val propertyName = propertyMapping[header]
+                        val property = News::class.memberProperties.find { it.name == propertyName }
+                        property?.get(newsItem)?.toString()?.replace("\n", " ") ?: ""
+                    }
+                    writer.println(values.joinToString(","))
+                }
+            }
+        }
+    }
 
     /**
      * Saves a collection of [News] items to a CSV file.
